@@ -1,14 +1,16 @@
-import { Client, Collection, Events, GatewayIntentBits, REST, Routes } from "discord.js";
+import { Client, Collection, GatewayIntentBits, REST, Routes } from "discord.js";
 import * as path from "path";
 import * as fs from "fs";
 
 export default class DiscordService {
     private client: Client;
     private commands: Collection<string, any>;
+    private cooldowns: Collection<string, Collection<string, number>>;
 
     constructor() {
         this.client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
         this.commands = new Collection();
+        this.cooldowns = new Collection();
     }
 
     public init() {
@@ -26,9 +28,9 @@ export default class DiscordService {
             const filePath = path.join(eventsPath, file);
             const event = require(filePath).default;
             if (event.once) {
-                this.client.once(event.name, (...args) => event.execute(...args, this.commands));
+                this.client.once(event.name, (...args) => event.execute(...args, this.commands, this.cooldowns));
             } else {
-                this.client.on(event.name, (...args) => event.execute(...args, this.commands));
+                this.client.on(event.name, (...args) => event.execute(...args, this.commands, this.cooldowns));
             }
         }
     }
