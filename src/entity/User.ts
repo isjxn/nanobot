@@ -6,8 +6,11 @@ export class User extends BaseEntity {
     id: number
 
     @Column()
-    discord_id: string
+    discordId: string
 
     @Column()
-    gill_amount: number
+    discordUsername: string
+
+    @Column()
+    gillAmount: number
 }
