@@ -43,7 +43,7 @@ const command: ICommand = {
         if ((higherOrLower === 'higher' && roll >= 50) || (higherOrLower === 'lower' && roll < 50)) {
             user.gillAmount += amount;
             await user.save();
-            return interaction.editReply(`You rolled ${roll} and won ${amount} gills!`);
+            return interaction.editReply(`You rolled ${roll} and won ${amount} gills because you said: ${higherOrLower}!`);
         }
 
         user.gillAmount -= amount;
