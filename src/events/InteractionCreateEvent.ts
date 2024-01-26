@@ -41,7 +41,7 @@ const event: IEvent = {
         setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
         try {
-            await command.execute(interaction);
+            await command.execute(interaction, commands, cooldowns);
         } catch (error) {
             console.error(error);
             if (interaction.replied || interaction.deferred) {
