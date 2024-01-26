@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import ICommand from "../../interfaces/ICommand";
 import findUser from "../../utils/findUser";
 
@@ -13,7 +13,13 @@ const command: ICommand = {
         const discordUser = interaction.user;
         var user = await findUser(discordUser.id, discordUser.globalName);
 
-        await interaction.editReply(`You currently have ${user.gillAmount} gills.`);
+        const embed = new EmbedBuilder()
+            .setColor("#3498db")
+            .setTitle(`${user.discordUsername}'s Balance`)
+            .setDescription(`You currently have **${user.gillAmount}** 🪙 Gills`)
+            .setTimestamp();
+
+        await interaction.editReply({ embeds: [embed] });
     }
 }
 

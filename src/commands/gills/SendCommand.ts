@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import ICommand from "../../interfaces/ICommand";
 import findUser from "../../utils/findUser";
 
@@ -25,19 +25,37 @@ const command: ICommand = {
         const amount = interaction.options.get('amount', true).value as number;
 
         if (amount > sender.gillAmount) {
-            return interaction.editReply(`You don't have enough gills to send ${amount} gills!`);
+            const embed = new EmbedBuilder()
+                .setColor("#e74c3c")
+                .setTitle(`❌ Send - Error`)
+                .setDescription(`You don't have: \`${amount}\` 🪙 Gills!`)
+                .setTimestamp();
+
+            return await interaction.editReply({ embeds: [embed] });
         }
 
         if (amount <= 0) {
-            return interaction.editReply(`You can't send ${amount} gills!`);
+            const embed = new EmbedBuilder()
+                .setColor("#e74c3c")
+                .setTitle(`❌ Send - Error`)
+                .setDescription(`You can't send \`${amount}\` 🪙 Gills!`)
+                .setTimestamp();
+
+            return await interaction.editReply({ embeds: [embed] });
         }
 
         sender.gillAmount -= amount;
         receiver.gillAmount += amount;
         await sender.save();
         await receiver.save();
+        
+        const embed = new EmbedBuilder()
+            .setColor("#3498db")
+            .setTitle(`✅ Send - Success`)
+            .setDescription(`You sent **${amount}** 🪙 Gills to ${receiver.discordUsername}!`)
+            .setTimestamp();
 
-        return interaction.editReply(`You sent ${amount} gills to ${receiver.discordUsername}!`);
+        return await interaction.editReply({ embeds: [embed] });
     }
 }
 

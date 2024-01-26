@@ -1,6 +1,7 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import ICommand from "../../interfaces/ICommand";
 import findUser from "../../utils/findUser";
+import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
 
 const command: ICommand = {
     cooldown: 5,
@@ -12,8 +13,8 @@ const command: ICommand = {
                 .setDescription('Whether the number will be higher or lower than 50.')
                 .setRequired(true)
                 .addChoices(
-                    {name: 'Higher', value: 'higher'},
-                    {name: 'Lower', value: 'lower'}
+                    { name: 'Higher', value: 'higher' },
+                    { name: 'Lower', value: 'lower' }
                 ))
         .addNumberOption(option =>
             option.setName('amount')
@@ -29,26 +30,58 @@ const command: ICommand = {
         const roll = Math.floor(Math.random() * 100) + 1;
 
         if (amount > user.gillAmount) {
-            return interaction.editReply(`You don't have enough gills to bet ${amount} gills!`);
+            const embed = new EmbedBuilder()
+                .setColor("#e74c3c")
+                .setTitle(`❌ Bet - Error`)
+                .setDescription(`You don't have: \`${amount}\` 🪙 Gills!`)
+                .setTimestamp();
+
+            await interaction.editReply({ embeds: [embed] });
         }
 
         if (amount <= 0) {
-            return interaction.editReply(`You can't bet ${amount} gills!`);
+            const embed = new EmbedBuilder()
+                .setColor("#e74c3c")
+                .setTitle(`❌ Bet - Error`)
+                .setDescription(`You can't bet: \`${amount}\` 🪙 Gills!`)
+                .setTimestamp();
+
+            return await interaction.editReply({ embeds: [embed] });
         }
 
         if (higherOrLower !== 'higher' && higherOrLower !== 'lower') {
-            return interaction.editReply(`You can only bet higher or lower!`);
+            const embed = new EmbedBuilder()
+                .setColor("#e74c3c")
+                .setTitle(`❌ Bet - Error`)
+                .setDescription(`You can only bet **higher** ⬆️ or **lower** ⬇️`)
+                .setTimestamp();
+
+            return await interaction.editReply({ embeds: [embed] });
         }
 
         if ((higherOrLower === 'higher' && roll >= 50) || (higherOrLower === 'lower' && roll < 50)) {
             user.gillAmount += amount;
             await user.save();
-            return interaction.editReply(`You rolled ${roll} and won ${amount} gills because you said: ${higherOrLower}!`);
+
+            const embed = new EmbedBuilder()
+                .setColor("#f1c40f")
+                .setTitle(`✅💰 Bet - You Won!`)
+                .setDescription(`You chose: \`${capitalizeFirstLetter(higherOrLower)}\` and rolled a \`${roll}\`! \nYou won: **${amount}** 🪙 Gills!`)
+                .setTimestamp();
+
+            return await interaction.editReply({ embeds: [embed] });
         }
 
         user.gillAmount -= amount;
         await user.save();
-        return interaction.editReply(`You rolled ${roll} and lost ${amount} gills because you said: ${higherOrLower}!`);
+
+        const embed = new EmbedBuilder()
+            .setColor("#e74c3c")
+            .setTitle(`❌ Bet - You Lost!`)
+            .setDescription(`You chose: \`${capitalizeFirstLetter(higherOrLower)}\` and rolled a \`${roll}\`! \nYou lost: **${amount}** 🪙 Gills!`)
+            .setTimestamp();
+
+        return await interaction.editReply({ embeds: [embed] });
     }
 }
 

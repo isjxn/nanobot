@@ -19,7 +19,6 @@ const event: IEvent = {
         }
 
         if (!cooldowns.has(command.data.name)) {
-            console.log(`Creating cooldowns for ${command.data.name}`);
             cooldowns.set(command.data.name, new Collection());
         }
 

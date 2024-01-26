@@ -1,6 +1,7 @@
-import { Client, CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { Client, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import ICommand from "../../interfaces/ICommand";
 import { User } from "../../entity/User";
+import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
 
 const command: ICommand = {
     cooldown: 5,
@@ -11,18 +12,23 @@ const command: ICommand = {
         await interaction.deferReply();
 
         const discordUser = interaction.user;
-        //var user = await findUser(discordUser.id);
         const allUsers = await User.find();
         var leaderboard = "";
         var i = 1;
+
         allUsers.sort((a, b) => b.gillAmount - a.gillAmount);
         allUsers.forEach(user => {
-            leaderboard += `${i}. ${user.discordUsername} - ${user.gillAmount} gills\n`;
+            leaderboard += `${i}. ${user.discordUsername} - ${user.gillAmount} Gills\n`;
             i++;
         });
-        await interaction.editReply(`**Gills Leaderboard**\n${leaderboard}`);
 
-        //await interaction.editReply(`You currently have ${user.gillAmount} gills.`);
+        const embed = new EmbedBuilder()
+            .setColor("#3498db")
+            .setTitle(`🏆 Gills - Leaderboard`)
+            .setDescription(leaderboard)
+            .setTimestamp();
+
+        return await interaction.editReply({ embeds: [embed] });
     }
 }
 
