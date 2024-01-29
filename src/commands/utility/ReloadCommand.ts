@@ -2,6 +2,9 @@ import { Collection, CommandInteraction, SlashCommandBuilder } from "discord.js"
 import ICommand from "../../interfaces/ICommand";
 import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
 
+/*
+TODO: Make it also work for commands that are not in utility directory
+*/
 const command: ICommand = {
     cooldown: 5,
     data: new SlashCommandBuilder()
