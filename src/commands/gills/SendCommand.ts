@@ -24,6 +24,17 @@ const command: ICommand = {
         var receiver = await findUser(discordReceiverUser.id, discordReceiverUser.globalName);
         const amount = interaction.options.get('amount', true).value as number;
 
+        // Check if sender is receiver
+        if (sender.discordId === receiver.discordId) {
+            const embed = new EmbedBuilder()
+                .setColor("#e74c3c")
+                .setTitle(`❌ Send - Error`)
+                .setDescription(`You can't send gills to yourself!`)
+                .setTimestamp();
+
+            return await interaction.editReply({ embeds: [embed] });
+        }
+
         if (amount > sender.gillAmount) {
             const embed = new EmbedBuilder()
                 .setColor("#e74c3c")
@@ -35,6 +46,17 @@ const command: ICommand = {
         }
 
         if (amount <= 0) {
+            const embed = new EmbedBuilder()
+                .setColor("#e74c3c")
+                .setTitle(`❌ Send - Error`)
+                .setDescription(`You can't send \`${amount}\` 🪙 Gills!`)
+                .setTimestamp();
+
+            return await interaction.editReply({ embeds: [embed] });
+        }
+
+        // Check if amount is decimal
+        if (amount % 1 !== 0) {
             const embed = new EmbedBuilder()
                 .setColor("#e74c3c")
                 .setTitle(`❌ Send - Error`)
