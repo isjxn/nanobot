@@ -13,6 +13,7 @@
     "dotenv": "^16.4.1",
     "mysql2": "^3.9.1",
     "reflect-metadata": "^0.1.13",
+    "sqlite3": "^5.1.7",
     "typeorm": "0.3.19"
   },
   "scripts": {
