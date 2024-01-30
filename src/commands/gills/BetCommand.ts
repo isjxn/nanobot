@@ -36,10 +36,21 @@ const command: ICommand = {
                 .setDescription(`You don't have: \`${amount}\` 🪙 Gills!`)
                 .setTimestamp();
 
-            await interaction.editReply({ embeds: [embed] });
+            return await interaction.editReply({ embeds: [embed] });
         }
 
         if (amount <= 0) {
+            const embed = new EmbedBuilder()
+                .setColor("#e74c3c")
+                .setTitle(`❌ Bet - Error`)
+                .setDescription(`You can't bet: \`${amount}\` 🪙 Gills!`)
+                .setTimestamp();
+
+            return await interaction.editReply({ embeds: [embed] });
+        }
+
+        // Check if amount is decimal
+        if (amount % 1 !== 0) {
             const embed = new EmbedBuilder()
                 .setColor("#e74c3c")
                 .setTitle(`❌ Bet - Error`)
