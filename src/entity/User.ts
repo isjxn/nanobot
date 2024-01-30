@@ -13,4 +13,9 @@ export class User extends BaseEntity {
 
     @Column()
     gillAmount: number
+
+    @Column({
+        nullable: true
+    })
+    lastDaily: Date
 }
