@@ -8,7 +8,6 @@ async function findUser(userId, username) {
         user.discordId = userId;
         user.discordUsername = username;
         user.gillAmount = 100;
-        user.lastDaily = new Date();
         await user.save();
     }
 
